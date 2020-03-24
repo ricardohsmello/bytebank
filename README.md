@@ -6,6 +6,7 @@ This repository contains an example of Flutter using Dart and building a simple 
 
 ## Built With
 - Flutter
+- IntelliJ IDEA
 
 # Usage
 - After clone the repo, go to folder root and run:
