@@ -14,5 +14,5 @@ This repository contains an example of Flutter using Dart and building a simple 
   - flutter packages get
     
 ## Running
-- ##### flutter run
+- #### flutter run
 ` 
