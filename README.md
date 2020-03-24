@@ -1,2 +1,20 @@
 # ricas-bytebank
 This is a Flutter study project
+
+# My Hello World from Flutter
+
+This is an example of Flutter
+
+This repository contains an example of Flutter using Dart and building a simple bytebank application
+
+## Built With
+- Flutter
+
+# Usage
+- After clone the repo, go to folder root and run:
+  - flutter upgrade
+  - flutter packages get
+    
+## Running
+- ##### flutter run
+` 
