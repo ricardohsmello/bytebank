@@ -7,7 +7,7 @@ class ByteBankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: TransferForm(),
+        body: TransferList(),
       ),
     );
   }
@@ -25,61 +25,115 @@ class TransferForm extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controllerAccountName,
-              style: TextStyle(fontSize: 24.0),
-              decoration: InputDecoration(
-                  labelText: 'Account name', hintText: 'CitiBank'),
-            ),
+          Editor(
+            controller: _controllerAccountName,
+            icon: null,
+            keyBoardType: TextInputType.text,
+            lblHint: 'CitiBank',
+            lblText: 'Account Name',
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _controllerAccountValue,
-              style: TextStyle(fontSize: 24.0),
-              decoration: InputDecoration(
-                  icon: Icon(Icons.monetization_on),
-                  labelText: 'Opening balance',
-                  hintText: '2000'),
-              keyboardType: TextInputType.number,
-            ),
+          Editor(
+            icon: Icons.monetization_on,
+            keyBoardType: TextInputType.number,
+            lblHint: '2000',
+            lblText: 'Opening balance',
+            controller: _controllerAccountValue,
           ),
-          RaisedButton(
-            child: Text('Salvar'),
-            onPressed: () {
-              final String accountName = _controllerAccountName.text;
-              final double accountValue =
-                  double.tryParse(_controllerAccountValue.text);
-
-              if (accountName != null && accountValue != null) {
-                final transfCreated = Transfer(accountName, accountValue);
-                debugPrint('$transfCreated');
-
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text('Record saved successfully!'),
-                ));
-              }
+          Builder(
+            builder: (BuildContext context) {
+              return RaisedButton(
+                child: Text('Salvar'),
+                onPressed: () {
+                  _addTransf(context);
+                },
+              );
             },
           ),
         ],
       ),
     );
   }
+
+  void _addTransf(BuildContext context) {
+    final String accountName = _controllerAccountName.text;
+    final double accountValue = double.tryParse(_controllerAccountValue.text);
+
+    if (accountName != null && accountValue != null) {
+      final transfCreated = Transfer(accountName, accountValue);
+      debugPrint('$transfCreated');
+
+      Navigator.pop(context, transfCreated);
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Record saved successfully!'),
+      ));
+    }
+  }
+}
+
+class Editor extends StatelessWidget {
+  final TextEditingController controller;
+  final String lblText;
+  final String lblHint;
+  final IconData icon;
+  final TextInputType keyBoardType;
+
+  Editor(
+      {this.controller,
+      this.lblText,
+      this.lblHint,
+      this.icon,
+      this.keyBoardType});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(fontSize: 24.0),
+        decoration: InputDecoration(
+            icon: icon != null ? Icon(icon) : null,
+            labelText: lblText,
+            hintText: lblHint),
+        keyboardType: keyBoardType,
+      ),
+    );
+  }
 }
 
 class TransferList extends StatelessWidget {
+  final List<Transfer> _transferList = List();
+
   @override
   Widget build(BuildContext context) {
+    _transferList.add(Transfer('Santander', 1000));
+    _transferList.add(Transfer('Caixa', 1000));
+    _transferList.add(Transfer('Caixa', 1000));
+
     return Scaffold(
       appBar: AppBar(title: Text('Transfer List')),
-      body: Column(
-        children: <Widget>[
-          TransferItem(Transfer('CitiBank', 2120)),
-          TransferItem(Transfer('Santander', 312)),
-          TransferItem(Transfer('Nubank', 720)),
-        ],
+      body: ListView.builder(
+        itemCount: _transferList.length,
+        itemBuilder: (context, index) {
+          final transfer = _transferList[index];
+          return TransferItem(transfer);
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          final Future<Transfer> future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return TransferForm();
+          }));
+
+          future.then((transferReceived) {
+            debugPrint('chegou no then');
+            debugPrint('$transferReceived');
+            _transferList.add(transferReceived);
+          });
+        },
       ),
     );
   }
