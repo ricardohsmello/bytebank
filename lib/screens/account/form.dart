@@ -1,27 +1,27 @@
 import 'package:bytebank/components/editors.dart';
-import 'package:bytebank/models/transfer.dart';
+import 'package:bytebank/models/account.dart';
 import 'package:flutter/material.dart';
 
 const _titleAppBar = 'New account bank';
 
-class TransferForm extends StatefulWidget {
+class AccountForm extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return TransferFormState();
+    return AccountFormState();
   }
 }
 
-class TransferFormState extends State<TransferForm> {
+class AccountFormState extends State<AccountForm> {
   final TextEditingController _controllerAccountName = TextEditingController();
   final TextEditingController _controllerAccountValue = TextEditingController();
 
-  void _addTransf(BuildContext context) {
+  void _addAccount(BuildContext context) {
     final String accountName = _controllerAccountName.text;
     final double accountValue = double.tryParse(_controllerAccountValue.text);
 
     if (accountName != null && accountValue != null) {
-      final transfCreated = Transfer(accountName, accountValue);
-      Navigator.pop(context, transfCreated);
+      final accountCreated = Account(accountName, accountValue);
+      Navigator.pop(context, accountCreated);
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Record saved successfully!'),
       ));
@@ -54,9 +54,9 @@ class TransferFormState extends State<TransferForm> {
             Builder(
               builder: (BuildContext context) {
                 return RaisedButton(
-                  child: Text('Salvar'),
+                  child: Text('Save'),
                   onPressed: () {
-                    _addTransf(context);
+                    _addAccount(context);
                   },
                 );
               },

@@ -1,14 +1,15 @@
-class Transfer {
+class Account {
   String accountName;
   double accountValue;
 
-  Transfer(
+  Account(
     this.accountName,
     this.accountValue,
   );
 
   @override
   String toString() {
-    return 'Transfer{accountName: $accountName, accountValue: $accountValue}';
+    return 'Account{accountName: $accountName, accountValue: $accountValue}';
   }
+
 }
