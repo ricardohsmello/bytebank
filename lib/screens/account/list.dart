@@ -1,50 +1,71 @@
+import 'package:bytebank/dao/account_dao.dart';
 import 'package:bytebank/models/account.dart';
 import 'package:bytebank/screens/account/form.dart';
- import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class AccountList extends StatefulWidget {
-  final List<Account> _accountList = List();
-
   @override
   State<StatefulWidget> createState() {
-     return AccountListState();
+    return AccountListState();
   }
 }
 
 class AccountListState extends State<AccountList> {
+  final AccountDAO _accountDAO = AccountDAO();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Accounts')),
-      body: ListView.builder(
-        itemCount: widget._accountList.length,
-        itemBuilder: (context, index) {
-          final account = widget._accountList[index];
-          return AccountItem(account);
+      body: FutureBuilder<List<Account>>(
+        initialData: List(),
+        future: Future.delayed(Duration(seconds: 1))
+            .then((value) => _accountDAO.findAll()),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              // TODO: Handle this case.
+              break;
+            case ConnectionState.waiting:
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularProgressIndicator(),
+                    Text('Loading')
+                  ],
+                ),
+              );
+              break;
+            case ConnectionState.active:
+              // TODO: Handle this case.
+              break;
+            case ConnectionState.done:
+              final List<Account> accountList = snapshot.data;
+              return ListView.builder(
+                itemCount: accountList?.length ?? 0,
+                itemBuilder: (context, index) {
+                  final account = accountList[index];
+                  return AccountItem(account);
+                },
+              );
+
+              break;
+          }
+          return Text('Unknown Error');
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          final Future<Account> future =
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return AccountForm();
           }));
-
-          future.then((accountReceived) {
-              addList(accountReceived);
-           });
         },
       ),
     );
-  }
-
-  void addList(Account accountReceived) {
-      setState(() {
-      if (accountReceived != null) {
-        widget._accountList.add(accountReceived);
-      }
-    });
   }
 }
 

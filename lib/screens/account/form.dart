@@ -1,10 +1,13 @@
 import 'package:bytebank/components/editors.dart';
+import 'package:bytebank/dao/account_dao.dart';
 import 'package:bytebank/models/account.dart';
 import 'package:flutter/material.dart';
 
 const _titleAppBar = 'New account bank';
 
 class AccountForm extends StatefulWidget {
+
+
   @override
   State<StatefulWidget> createState() {
     return AccountFormState();
@@ -12,6 +15,8 @@ class AccountForm extends StatefulWidget {
 }
 
 class AccountFormState extends State<AccountForm> {
+  final AccountDAO _accountDAO = AccountDAO();
+
   final TextEditingController _controllerAccountName = TextEditingController();
   final TextEditingController _controllerAccountValue = TextEditingController();
 
@@ -20,11 +25,14 @@ class AccountFormState extends State<AccountForm> {
     final double accountValue = double.tryParse(_controllerAccountValue.text);
 
     if (accountName != null && accountValue != null) {
-      final accountCreated = Account(accountName, accountValue);
-      Navigator.pop(context, accountCreated);
+      final accountCreated = Account(0, accountName, accountValue);
+
+      _accountDAO.save(accountCreated).then((id) => Navigator.pop(context));
+
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Record saved successfully!'),
       ));
+
     }
   }
 

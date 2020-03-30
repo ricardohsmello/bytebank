@@ -1,7 +1,15 @@
- import 'package:bytebank/screens/dashboard/dashboard.dart';
+import 'package:bytebank/screens/dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(ByteBankApp());
+
+void main() {
+  runApp(ByteBankApp());
+//  save(Account(0, 'Caixinha', 4232)).then((id) {
+//    findAll().then((accounts) {
+//      debugPrint(accounts.toString());
+//    });
+//  });
+}
 
 class ByteBankApp extends StatelessWidget {
   @override
